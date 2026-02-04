@@ -1,11 +1,6 @@
 # AWS Lambda Cost Optimization (Simple Guide + Terraform Hands-On)
 
 
-
-Tags: `aws` `lambda` `serverless` `cost-optimization` `terraform` `best-practices`
-
----
-
 ## Table of Contents
 - Why AWS Lambda?
 - Cost Optimization: the real levers
@@ -29,7 +24,7 @@ Lambda cost is not magic. It depends on a few things:
 - **Execution time**: shorter runtime = cheaper.
 - **Memory size**: more memory costs more, but can reduce runtime.
 - **Invocation count**: many small calls can still be expensive.
-- **Cold starts**: not always a cost issue, but can impact latency and lead to higher memory needs.
+- **Cold starts**: mostly a latency issue, but can push you to use more memory.
 
 Quick tip: try 256MB, 512MB, 1024MB and compare **cost per request**. Sometimes more memory is cheaper overall because the function finishes faster.
 
@@ -114,6 +109,9 @@ Open it in your browser.
 The Lambda API exposes a simple cost estimator at the `/cost` endpoint.
 
 Example with defaults:
+![lambda cost](https://raw.githubusercontent.com/Ankoay-Feno/serverless-stack/refs/heads/main/lambda-function/assets/image.png)
+
+<span style="color:#FB4B4E"><strong>I take the maximum utilization of 1 million requests per month with 512MB memory and 200ms execution time; the estimated cost is around $5.60.</strong></span>
 
 ---
 
