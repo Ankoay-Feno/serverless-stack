@@ -108,31 +108,12 @@ After `apply`, Terraform outputs the API URL:
 ```
 api_url = https://xxxxxx.execute-api.us-east-1.amazonaws.com
 ```
-Open it in your browser or curl it.
+Open it in your browser.
 
 ### Step 6: Cost calculator endpoint (Python)
 The Lambda API exposes a simple cost estimator at the `/cost` endpoint.
 
 Example with defaults:
-```bash
-curl "https://xxxxxx.execute-api.us-east-1.amazonaws.com/cost"
-```
-
-Example with custom values:
-```bash
-curl "https://xxxxxx.execute-api.us-east-1.amazonaws.com/cost?memory_mb=512&requests_per_month=2000000&avg_duration_ms=120"
-```
-
-You can also estimate using `hours_month` instead of request duration:
-```bash
-curl "https://xxxxxx.execute-api.us-east-1.amazonaws.com/cost?memory_mb=1024&hours_month=20"
-```
-
-Query parameters:
-- `memory_mb` (default 128)
-- `requests_per_month` (default 1000000)
-- `avg_duration_ms` (default 100)
-- `hours_month` (optional, overrides avg duration math)
 
 ---
 

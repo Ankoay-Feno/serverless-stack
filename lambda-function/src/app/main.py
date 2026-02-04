@@ -18,8 +18,8 @@ def estimate_cost(
     memory_mb: int = Query(128, ge=128, le=10240),
     requests_per_month: int = Query(1000000, ge=0),
     avg_duration_ms: float = Query(100.0, ge=0.0),
-    hours_month: float | None = Query(None, ge=0.0),
-    cpu_note: str | None = Query(None),
+    hours_month: float  = Query(720, ge=0.0),
+    cpu_note: str  = Query(1),
 ):
     """
     Estimate Lambda cost based on memory + duration or total hours.
