@@ -1,0 +1,7 @@
+terraform/build/*
+
+terraform/.terraform*
+
+
+terraform/.infracost*
+terraform/terraform.tfstate*
