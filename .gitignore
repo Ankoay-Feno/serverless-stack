@@ -1,7 +1,0 @@
-lambda-function/terraform/build/*
-
-lambda-function/terraform/.terraform*
-
-
-lambda-function/terraform/.infracost*
-lambda-function/terraform/terraform.tfstate*
