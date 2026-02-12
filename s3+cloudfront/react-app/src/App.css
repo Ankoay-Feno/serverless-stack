@@ -1,0 +1,342 @@
+#root {
+  min-height: 100vh;
+}
+
+.app-wrap {
+  min-height: 100vh;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at 14% 12%, rgba(56, 189, 248, 0.2), transparent 35%),
+    radial-gradient(circle at 88% 82%, rgba(249, 115, 22, 0.15), transparent 40%),
+    linear-gradient(140deg, #020617 0%, #111827 55%, #0f172a 100%);
+}
+
+.panel {
+  width: min(96vw, 920px);
+  margin: 0 auto;
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(8, 16, 32, 0.72);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 20px 65px rgba(0, 0, 0, 0.5);
+}
+
+.top-nav {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  margin-bottom: 0.85rem;
+}
+
+.route-link {
+  color: #cbd5e1;
+  text-decoration: none;
+  padding: 0.45rem 0.7rem;
+  border-radius: 0.55rem;
+  font-weight: 600;
+}
+
+.route-link.active {
+  background: #0ea5e9;
+  color: #082f49;
+}
+
+.page {
+  padding: 1.2rem;
+}
+
+.page h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #e2e8f0;
+}
+
+.subtle {
+  margin: 0 0 1rem;
+  color: #93c5fd;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.action-card {
+  text-align: left;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.75);
+  color: #e2e8f0;
+  padding: 1rem;
+}
+
+.action-card h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.1rem;
+}
+
+.action-card p {
+  margin: 0;
+  color: #94a3b8;
+}
+
+.calculator {
+  max-width: 360px;
+  margin: 0 auto;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.calc-screen {
+  background: #020617;
+  color: #e2e8f0;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: right;
+  border-radius: 0.75rem;
+  padding: 1rem 0.75rem;
+  min-height: 80px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin-bottom: 0.9rem;
+  overflow: hidden;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.calc-btn {
+  height: 56px;
+  border: 0;
+  border-radius: 0.7rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+.calc-btn.operator {
+  background: #f59e0b;
+  color: #111827;
+}
+
+.calc-btn.equal {
+  background: #22c55e;
+  color: #052e16;
+}
+
+.calc-btn.control {
+  background: #475569;
+}
+
+.calc-btn.zero {
+  grid-column: span 2;
+}
+
+.viewport {
+  --cube-size: clamp(112px, 30vw, 170px);
+  --cube-depth: calc(var(--cube-size) / 2);
+  height: clamp(260px, 52vw, 420px);
+  max-height: 62svh;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    #050d1f;
+  background-size: 24px 24px, 24px 24px, auto;
+  display: grid;
+  place-items: center;
+  perspective: 900px;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+  margin-bottom: 0.75rem;
+}
+
+.viewport:active {
+  cursor: grabbing;
+}
+
+.scene {
+  width: var(--cube-size);
+  height: var(--cube-size);
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 80ms linear;
+}
+
+.face {
+  position: absolute;
+  width: var(--cube-size);
+  height: var(--cube-size);
+  border-radius: 0.6rem;
+  border: 2px solid rgba(226, 232, 240, 0.35);
+  display: grid;
+  place-items: center;
+  color: #f8fafc;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  backface-visibility: hidden;
+  box-shadow: inset 0 0 35px rgba(255, 255, 255, 0.1);
+}
+
+.front {
+  background: rgba(34, 211, 238, 0.45);
+  transform: translateZ(var(--cube-depth));
+}
+
+.back {
+  background: rgba(249, 115, 22, 0.45);
+  transform: rotateY(180deg) translateZ(var(--cube-depth));
+}
+
+.right {
+  background: rgba(167, 139, 250, 0.45);
+  transform: rotateY(90deg) translateZ(var(--cube-depth));
+}
+
+.left {
+  background: rgba(14, 165, 233, 0.45);
+  transform: rotateY(-90deg) translateZ(var(--cube-depth));
+}
+
+.top {
+  background: rgba(52, 211, 153, 0.45);
+  transform: rotateX(90deg) translateZ(var(--cube-depth));
+}
+
+.bottom {
+  background: rgba(244, 114, 182, 0.45);
+  transform: rotateX(-90deg) translateZ(var(--cube-depth));
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.55rem 0.75rem;
+  align-items: center;
+}
+
+.controls label {
+  color: #e2e8f0;
+  font-size: 0.95rem;
+}
+
+.controls input[type='range'] {
+  width: 100%;
+}
+
+.controls button,
+.home-link {
+  grid-column: 1 / -1;
+  justify-self: start;
+  border: 0;
+  border-radius: 0.55rem;
+  padding: 0.5rem 0.9rem;
+  background: #38bdf8;
+  color: #082f49;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.not-found-panel {
+  text-align: center;
+}
+
+.snake-page {
+  max-width: 640px;
+}
+
+.snake-info {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 0.7rem;
+}
+
+.snake-text {
+  margin: 0;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.snake-btn {
+  border: 0;
+  border-radius: 0.55rem;
+  padding: 0.45rem 0.75rem;
+  background: #22c55e;
+  color: #052e16;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.snake-over {
+  margin: 0 0 0.6rem;
+  color: #fda4af;
+  font-weight: 700;
+}
+
+.snake-board {
+  width: min(92vw, 520px);
+  margin: 0 auto 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  border: 1px solid #334155;
+  background: #0b1220;
+}
+
+.snake-cell {
+  aspect-ratio: 1 / 1;
+  border: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.snake-cell.body {
+  background: #38bdf8;
+}
+
+.snake-cell.head {
+  background: #0ea5e9;
+}
+
+.snake-cell.food {
+  background: #f43f5e;
+  border-radius: 999px;
+}
+
+@media (max-width: 700px) {
+  .top-nav {
+    flex-wrap: wrap;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .controls button,
+  .home-link {
+    width: 100%;
+    justify-self: stretch;
+  }
+
+  .snake-info {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
