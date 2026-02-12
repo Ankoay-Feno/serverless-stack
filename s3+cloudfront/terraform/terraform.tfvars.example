@@ -1,0 +1,9 @@
+aws_region  = "us-east-1"
+app_name    = "react-3d-cube"
+environment = "dev"
+price_class = "PriceClass_100"
+
+# Optional tags
+# tags = {
+#   Owner = "team-web"
+# }
