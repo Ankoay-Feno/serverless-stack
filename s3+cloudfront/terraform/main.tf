@@ -43,12 +43,19 @@ module "s3_site" {
 
 module "cloudfront_site" {
   source = "./modules/cloudfront_site"
+  providers = {
+    aws           = aws
+    aws.us_east_1 = aws.us_east_1
+  }
 
   site_name                   = local.full_name
   price_class                 = var.price_class
   bucket_id                   = module.s3_site.bucket_id
   bucket_arn                  = module.s3_site.bucket_arn
   bucket_regional_domain_name = module.s3_site.bucket_regional_domain_name
+  enable_waf                  = var.enable_waf
+  waf_rate_limit              = var.waf_rate_limit
+  enable_shield_advanced      = var.enable_shield_advanced
   tags                        = local.merged_tags
 
   depends_on = [module.s3_site]

@@ -8,6 +8,24 @@ variable "price_class" {
   type        = string
 }
 
+variable "enable_waf" {
+  description = "Enable AWS WAF on CloudFront."
+  type        = bool
+  default     = true
+}
+
+variable "waf_rate_limit" {
+  description = "Max requests per 5 minutes per IP before block."
+  type        = number
+  default     = 2000
+}
+
+variable "enable_shield_advanced" {
+  description = "Enable Shield Advanced on CloudFront distribution."
+  type        = bool
+  default     = false
+}
+
 variable "bucket_id" {
   description = "S3 bucket ID used as CloudFront origin."
   type        = string

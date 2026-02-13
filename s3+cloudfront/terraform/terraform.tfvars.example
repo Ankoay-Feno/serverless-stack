@@ -2,6 +2,13 @@ aws_region  = "us-east-1"
 app_name    = "react-3d-cube"
 environment = "dev"
 price_class = "PriceClass_100"
+enable_waf  = true
+
+# Requests per 5 minutes per IP before WAF blocks
+waf_rate_limit = 2000
+
+# Requires active AWS Shield Advanced subscription
+enable_shield_advanced = false
 
 # Optional tags
 # tags = {

@@ -1,7 +1,8 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source                = "hashicorp/aws"
+      configuration_aliases = [aws.us_east_1]
     }
   }
 }
@@ -34,6 +35,147 @@ function handler(event) {
 EOT
 }
 
+resource "aws_cloudfront_response_headers_policy" "site_security" {
+  name = "${var.site_name}-security-headers"
+
+  security_headers_config {
+    content_type_options {
+      override = true
+    }
+
+    frame_options {
+      frame_option = "DENY"
+      override     = true
+    }
+
+    referrer_policy {
+      referrer_policy = "strict-origin-when-cross-origin"
+      override        = true
+    }
+
+    strict_transport_security {
+      access_control_max_age_sec = 31536000
+      include_subdomains         = true
+      preload                    = true
+      override                   = true
+    }
+
+    xss_protection {
+      mode_block = true
+      protection = true
+      override   = true
+    }
+  }
+}
+
+resource "aws_wafv2_web_acl" "site" {
+  provider = aws.us_east_1
+  count    = var.enable_waf ? 1 : 0
+
+  name  = "${var.site_name}-web-acl"
+  scope = "CLOUDFRONT"
+
+  default_action {
+    allow {}
+  }
+
+  rule {
+    name     = "AWS-AWSManagedRulesCommonRuleSet"
+    priority = 10
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesCommonRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+
+    override_action {
+      none {}
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${var.site_name}-common"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
+    priority = 20
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesKnownBadInputsRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+
+    override_action {
+      none {}
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${var.site_name}-known-bad-inputs"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "AWS-AWSManagedRulesAmazonIpReputationList"
+    priority = 30
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesAmazonIpReputationList"
+        vendor_name = "AWS"
+      }
+    }
+
+    override_action {
+      none {}
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${var.site_name}-ip-reputation"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "RateLimitByIp"
+    priority = 40
+
+    action {
+      block {}
+    }
+
+    statement {
+      rate_based_statement {
+        aggregate_key_type = "IP"
+        limit              = var.waf_rate_limit
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${var.site_name}-rate-limit"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "${var.site_name}-web-acl"
+    sampled_requests_enabled   = true
+  }
+
+  tags = var.tags
+}
+
 resource "aws_cloudfront_distribution" "site" {
   enabled             = true
   comment             = "${var.site_name} static site"
@@ -51,8 +193,9 @@ resource "aws_cloudfront_distribution" "site" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "s3-origin-${var.bucket_id}"
 
-    viewer_protocol_policy = "redirect-to-https"
-    compress               = true
+    viewer_protocol_policy     = "redirect-to-https"
+    compress                   = true
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.site_security.id
 
     forwarded_values {
       query_string = false
@@ -94,9 +237,20 @@ resource "aws_cloudfront_distribution" "site" {
 
   viewer_certificate {
     cloudfront_default_certificate = true
+    minimum_protocol_version       = "TLSv1.2_2021"
   }
 
+  web_acl_id = var.enable_waf ? aws_wafv2_web_acl.site[0].arn : null
+
   tags = var.tags
+}
+
+resource "aws_shield_protection" "site" {
+  provider = aws.us_east_1
+  count    = var.enable_shield_advanced ? 1 : 0
+
+  name         = "${var.site_name}-shield-advanced"
+  resource_arn = aws_cloudfront_distribution.site.arn
 }
 
 data "aws_iam_policy_document" "site_bucket_policy" {

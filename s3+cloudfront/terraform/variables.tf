@@ -28,6 +28,24 @@ variable "price_class" {
   default     = "PriceClass_100"
 }
 
+variable "enable_waf" {
+  description = "Enable AWS WAF on CloudFront distribution."
+  type        = bool
+  default     = true
+}
+
+variable "waf_rate_limit" {
+  description = "Max requests per 5 minutes per IP before block rule is applied."
+  type        = number
+  default     = 2000
+}
+
+variable "enable_shield_advanced" {
+  description = "Enable AWS Shield Advanced protection for CloudFront (requires active Shield Advanced subscription)."
+  type        = bool
+  default     = false
+}
+
 variable "tags" {
   description = "Additional tags to apply to resources."
   type        = map(string)
